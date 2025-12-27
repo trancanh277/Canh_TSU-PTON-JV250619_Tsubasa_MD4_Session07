@@ -4,7 +4,6 @@ import com.example.md4_session07.model.dto.ProductDTO;
 import com.example.md4_session07.model.entity.Product;
 import com.example.md4_session07.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,30 +22,15 @@ public class ProductService {
     }
 
     public Product save(ProductDTO productDTO) {
-        // Kiểm tra input
-        if (productDTO == null || productDTO.getName() == null || productDTO.getName().isEmpty()) {
-            System.out.println("❌ Invalid ProductDTO: name is required");
-            return null;
-        }
-
-        System.out.println("📥 ProductDTO: " + productDTO);
-
         Product product = convertProductDTOToEntity(productDTO);
-        System.out.println("🔄 Converted Product: " + product);
-
         try {
-            Product savedProduct = productRepository.save(product);
-            System.out.println("✅ Saved with ID: " + savedProduct.getId());
-            return savedProduct;
-        } catch (DataIntegrityViolationException e) {
-            System.out.println("❌ Database constraint violation: " + e.getMessage());
-            return null;
+            return productRepository.save(product);
         } catch (Exception e) {
-            System.out.println("❌ Unexpected error: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
     }
+
     public Product update(Long id, ProductDTO productDTO) {
         Product product = getProductById(id);
         if (product != null) {
